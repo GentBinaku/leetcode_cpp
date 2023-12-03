@@ -1,48 +1,37 @@
-#include <iostream>
-#include <vector>
-#include <unordered_map>
 #include <dbg.h>
+#include <iostream>
 #include <set>
+#include <unordered_map>
+#include <vector>
 
-using namespace std;
+class Solution {
+public:
+    std::vector<int> dailyTemperatures(std::vector<int>& temperatures) {
+        std::vector<int> res(temperatures.size(), 0);
+        std::stack<int> st;
 
-int coordToGrid(int i, int j){
-    return (i / 3) * 3 + j / 3;
-}
+        for(int i = temperatures.size() - 1; i >= 0; i--){
+            while(!st.empty() && temperatures[st.top()] <= temperatures[i]){
+                st.pop();
+            }
 
-bool isValidSudoku(vector<vector<char>>& board) {
-    vector<set<char>> rows(9), cols(9), grids(9);
-    pair<set<char>::iterator , bool> ret;
-
-    for(int i = 0; i < 9; ++i){
-        for(int j = 0; j < 9; ++j)
-        {
-            char c = board[i][j];
-            if(c == '.') continue;
-            int gridIdx = coordToGrid(i, j);
-            ret = rows[i].insert(c);
-            if(!ret.second) return false;
-            ret = cols[j].insert(c);
-            if(!ret.second) return false;
-            ret = grids[gridIdx].insert(c);
-            if(!ret.second) return false;
+            if(!st.empty())
+                res[i] = st.top() - i;
+          
+        
+            st.push(i);
         }
-    }
-    return true;
-}
-
+        return res;
+     }
+};
 
 int main() {
-  vector<vector<char>> mat =
-          {{'5','3','.','.','7','.','.','.','.'},
-           {'6','.','.','1','9','5','.','.','.'},
-           {'.','9','8','.','.','.','.','6','.'},
-           {'8','.','.','.','6','.','.','.','3'},
-           {'4','.','.','8','.','3','.','.','1'},
-           {'7','.','.','.','2','.','.','.','6'},
-           {'.','6','.','.','.','.','2','8','.'},
-           {'.','.','.','4','1','9','.','.','5'},
-           {'.','.','.','.','8','.','.','7','9'}};
 
-    std::cout << isValidSudoku(mat) << std::endl;
+  Solution s;
+  std::vector<int> temperatures = {73, 74, 75, 71, 69, 72, 76, 73};
+  std::vector<int> res = s.dailyTemperatures(temperatures);
+  for (auto &i : res) {
+    std::cout << i << std::endl;
+  }
+  return 0;
 };
